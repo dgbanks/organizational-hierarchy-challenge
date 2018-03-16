@@ -15,14 +15,15 @@ class EmployeesController < ApplicationController
   end
 
   def index
-    @employees = Employee.all
-    # @employees = Employee.where(manager_id: nil)
-    render json: @employees
+    # @employees = Employee.all
+    @employees = Employee.where(manager_id: nil)
+    # render json: @employees, include: [:direct_reports]
+    render :index
   end
 
   def show
     @employee = Employee.find(params[:id])
-    render json: @employee
+    render json: @employee, include: [:direct_reports]
   end
 
   def update

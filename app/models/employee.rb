@@ -12,4 +12,8 @@ class Employee < ApplicationRecord
     foreign_key: :manager_id,
     class_name: :Employee,
     dependent: :destroy
+
+  def name
+    self.first_name + ' ' + self.last_name
+  end
 end
