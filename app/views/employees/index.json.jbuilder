@@ -1,1 +1,3 @@
-json.extract! @employees
+@employees.each do |employee|
+  json.extract! employee, :id, :name
+end
