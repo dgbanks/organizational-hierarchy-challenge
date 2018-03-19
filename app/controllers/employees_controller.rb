@@ -21,7 +21,7 @@ class EmployeesController < ApplicationController
 
   def show
     @employee = Employee.find(params[:id])
-    render json: @employee, include: [:direct_reports => {include: [:direct_reports]}]
+    render :show
   end
 
   def update
