@@ -4,14 +4,19 @@ import './App.css';
 import axios from 'axios';
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {};
+  }
+
   componentDidMount() {
-    console.log('componentDidMount');
     axios.get('http://localhost:3000/employees').then(
-      response => console.log(response)
+      response => this.setState({ employees: response.data })
     );
   }
 
   render() {
+    console.log('this.state', this.state);
     return (
       <div className="App">
         <header className="App-header">

@@ -1,3 +1,1 @@
-@employees.each do |employee|
-  json.extract! employee, :id, :name
-end
+json.partial! "employees/employee", employee: @employee
