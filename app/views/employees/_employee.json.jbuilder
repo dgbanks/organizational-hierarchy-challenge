@@ -1,4 +1,4 @@
-json.(employee, :id, :name, :title)
+json.(employee, :id, :name, :title, :manager_id)
 json.direct_reports do
   json.array! employee.direct_reports.each do |emp|
     json.partial! "employees/employee", employee: emp

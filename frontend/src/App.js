@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Employee } from './employee';
 import axios from 'axios';
 
 class App extends Component {
@@ -9,25 +8,34 @@ class App extends Component {
     this.state = {};
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    console.log(this.props);
     axios.get('http://localhost:3000/employees').then(
       response => this.setState({ employees: response.data })
     );
   }
 
   render() {
-    console.log('this.state', this.state);
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
+    if (this.state.employees) {
+      const employees = this.state.employees;
+      return (
+        <div style={{display:'flex', justifyContent:'center'}}>
+          <div style={{
+            border:'1px solid black',
+            borderRadius:'10px',
+            width:'75%'
+          }}>
+            {
+              employees.map(employee => (
+                <Employee key={employee.id} employee={employee} opacity={0.7}/>
+              ))
+            }
+          </div>
+        </div>
+      );
+    } else {
+      return <div>loading organization data...</div>;
+    }
   }
 }
 
