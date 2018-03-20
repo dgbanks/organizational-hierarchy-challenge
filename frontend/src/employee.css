@@ -25,7 +25,6 @@
 }
 
 .employee div:hover {
-  /* cursor: pointer; */
   border: 1px solid white;
   color: white;
 }
