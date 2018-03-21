@@ -30,7 +30,7 @@ class Form extends React.Component {
       manager_id: newProps.manager.id,
       managerName: newProps.manager.name
     });
-    
+
     if (this.props.employee) {
       if (newProps.manager.id !== this.props.employee.manager_id) {
         this.setState({ formComplete: true });
@@ -102,7 +102,10 @@ class Form extends React.Component {
             placeholder='Title'
             value={this.state.title}
             onChange={(e) => this.updateField(e)}/>
-            {this.updateManager()}
+
+          {this.updateManager()}
+          
+          <p>{this.props.notice}</p>
         </div>
 
         <div>

@@ -1,4 +1,7 @@
 .header {
+  top: 0;
+  position:fixed;
+  background-color: white;
   height: 75px;
   width: 100%;
   border-bottom: 1px solid black;
@@ -9,7 +12,10 @@
 }
 
 .form {
-  height: 200px;
+  background-color: white;
+  position: fixed;
+  top: 0;
+  height: 250px;
 }
 
 .header div:first-of-type {
@@ -22,6 +28,7 @@
   padding: 15px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .header div:last-of-type {
@@ -53,9 +60,23 @@
 
 .header input {
   height: 30px;
+  margin: 5px;
   font-size: 20px
 }
 
 .header p {
   margin: 5px
+}
+
+.index {
+  width: 75%;
+  margin-bottom: 50px;
+}
+
+.header + .index {
+  padding-top: 90px;
+}
+
+.form + .index {
+  padding-top: 265px;
 }

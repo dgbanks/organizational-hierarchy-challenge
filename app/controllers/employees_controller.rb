@@ -1,11 +1,8 @@
 class EmployeesController < ApplicationController
   def create
     @employee = Employee.new(employee_params)
-    if @employee.save
-      render :show
-    else
-      render json: @employee.errors.full_messages, status: 422
-    end
+    @notice = "Invalid attributes" unless @employee.save
+    render :notice
   end
 
   def destroy
@@ -26,10 +23,11 @@ class EmployeesController < ApplicationController
 
   def update
     @employee = Employee.find(params[:id])
-    if @employee.update_attributes(employee_params)
+    if @employee.send(:no_loop?) && @employee.update_attributes(employee_params)
       render :show
     else
-      render json: @employee.errors.full_messages, status: 422
+      @notice = "Can't create loops in hierarchy"
+      render :notice
     end
   end
 

@@ -19,38 +19,54 @@ class App extends Component {
 
   componentWillMount() {
     APIUtils.fetchEmployees().then(
-      response => this.setState({ employees: response.data })
+      response => {
+        this.setState({ employees: response.data });
+        console.log(response);
+      }
     );
   }
 
   closeForm() {
-    this.setState({ showForm: false, selected: null,  });
+    this.setState({ showForm: false, selected: null });
   }
 
   handleSubmit(employee) {
     async function anon() {
       let response;
       if (typeof(employee) === 'number') {
-        await APIUtils.deleteEmployee(employee);
+        response = await APIUtils.deleteEmployee(employee);
       } else if (employee.id) {
-        await APIUtils.editEmployee(employee);
+        response = await APIUtils.editEmployee(employee);
       } else {
-        await APIUtils.createEmployee(employee);
+        response = await APIUtils.createEmployee(employee);
       }
-      console.log(response);
+      return response;
     };
-    anon().then(() => {
-      APIUtils.fetchEmployees().then(
-        response => this.setState({ employees: response.data })
-      )
-      this.closeForm();
+    anon().then(response => {
+      if (response.data.notice) {
+        this.setState({ notice: response.data.notice });
+      } else {
+        APIUtils.fetchEmployees().then(
+          response => this.setState({
+            employees: response.data,
+            notice: "Success!"
+          })
+        );
+        this.closeForm();
+      }
     })
+  }
+
+  timeoutNotice() {
+    setTimeout(() => this.setState({notice: null}), 3000);
+    return this.state.notice
   }
 
   displayHeader() {
     if (this.state.showForm) {
       return (
         <Form
+          notice={this.state.notice}
           handleSubmit={this.handleSubmit}
           closeForm={this.closeForm}
           manager={this.state.manager}
@@ -61,7 +77,7 @@ class App extends Component {
       return (
         <div className='header'>
           <button onClick={() => this.setState({ showForm: true })}>
-            Add New Employee
+            {this.state.notice ? this.timeoutNotice() : "Add New Employee"}
           </button>
         </div>
       );
@@ -77,12 +93,13 @@ class App extends Component {
   }
 
   render() {
+    console.log(this.state.employees);
     if (this.state.employees) {
       const employees = this.state.employees;
       return (
         <div style={{display:'flex', flexDirection: 'column', alignItems: 'center', justifyContent:'center'}}>
           {this.displayHeader()}
-          <div style={{width:'75%'}}>
+          <div className='index'>
             {
               employees.map(employee => (
                 <Employee
