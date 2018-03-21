@@ -4,7 +4,11 @@ class Form extends React.Component {
   constructor() {
     super();
     this.state = {
-        id: null, first_name: '', last_name: '', title: '', manager_id: null
+      id: null, 
+      first_name: '',
+      last_name: '',
+      title: '',
+      manager_id: null
     };
 
     this.updateField = this.updateField.bind(this);

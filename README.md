@@ -5,7 +5,7 @@
   * run ```bundle install``` and ```rails db:setup``` in root directory
   * run ```npm install``` in ```/frontend```
   * run ```rails s``` to set create the API on ```localhost:3000```
-  * run ```npm start```, which should run on ```localhost:3001```
+  * run ```npm start```, in ```/frontend``` which should run on ```localhost:3001```
 
 ### API
   * backend routes can be tested via Postman or the ```localhost:3000``` url
