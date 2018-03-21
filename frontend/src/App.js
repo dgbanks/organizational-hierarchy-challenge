@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Employee } from './employee';
+import Form from './employee_form';
 import axios from 'axios';
 import './App.css';
 
@@ -8,18 +9,23 @@ class App extends Component {
     super();
     this.state = {
       selected: null,
-      newEmployee: null
+      newEmployee: null,
+      showForm: false
     };
 
     this.selectEmployee = this.selectEmployee.bind(this);
-    this.newEmployeeForm = this.newEmployeeForm.bind(this);
-    this.updateField = this.updateField.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.displayHeader = this.displayHeader.bind(this);
+    this.closeForm = this.closeForm.bind(this);
   }
 
   componentWillMount() {
     this.fetchEmployees();
   }
+
+  // componentDidUpdate() {
+  //
+  // }
 
   fetchEmployees() {
     axios.get('http://localhost:3000/employees').then(
@@ -27,100 +33,33 @@ class App extends Component {
     );
   }
 
-  updateField(e) {
-    if (e.target.placeholder === 'First Name') {
-      this.setState({
-        newEmployee: Object.assign(
-          {}, this.state.newEmployee, { first_name: e.target.value }
-        )
-      });
-    }
-    if (e.target.placeholder === 'Last Name') {
-      this.setState({
-        newEmployee: Object.assign(
-          {}, this.state.newEmployee, { last_name: e.target.value }
-        )
-      });
-    }
-    if (e.target.placeholder === 'Title') {
-      this.setState({
-        newEmployee: Object.assign(
-          {}, this.state.newEmployee, { title: e.target.value }
-        )
-      });
-    }
-
-    let { first_name, last_name, title } = this.state.newEmployee;
-    if (first_name && last_name && title) {
-      this.setState({ formComplete: true });
-    } else {
-      this.setState({ formComplete: false });
-    }
+  closeForm() {
+    this.setState({ showForm: false });
   }
 
-  updateManager() {
-    if (this.state.newEmployee.manager_id) {
-      return (
-        <span>
-          <p>Manager: {this.state.newEmployee.manager_name}</p>
-          <button style={{fontSize: '15px', padding: '5px'}}
-            onClick={() => this.setState({ newEmployee: Object.assign(
-              {}, this.state.newEmployee, { manager_id: null }
-            )
-          })}>
-            Remove manager
-          </button>
-        </span>
-      );
-    } else {
-      return (
-        <p>Click an existing employee to assign a manager (optional)</p>
-      );
-    }
-  }
-
-  handleSubmit() {
+  handleSubmit(employee) {
     console.log('firing');
-    axios.post('http://localhost:3000/employees', this.state.newEmployee)
-      .then(
-        response => this.setState({ add: response.data, newEmployee: null })
+    axios.post('http://localhost:3000/employees', employee)
+      .then(() => {
+        this.fetchEmployees();
+        this.closeForm();
+      }
     );
   }
 
-  newEmployeeForm() {
-    if (this.state.newEmployee) {
+  displayHeader() {
+    if (this.state.showForm) {
       return (
-        <div className='header form'>
-
-          <div>
-            <input placeholder='First Name'
-                   onChange={(e) => this.updateField(e)}/>
-            <input placeholder='Last Name'
-                   onChange={(e) => this.updateField(e)}/>
-            <input placeholder='Title'
-                   onChange={(e) => this.updateField(e)}/>
-              {this.updateManager()}
-          </div>
-
-          <div>
-            <button onClick={this.handleSubmit}
-            disabled={!this.state.formComplete}
-            style={ !this.state.formComplete ? {display: 'none'} : null }>
-              Save
-            </button>
-            <button onClick={() => this.setState({ newEmployee: null })}>
-              Cancel
-            </button>
-          </div>
-
-        </div>
+        <Form
+          handleSubmit={this.handleSubmit}
+          closeForm={this.closeForm}
+          manager={{id: this.state.selected, name: this.state.selectedName}}
+        />
       );
     } else {
       return (
         <div className='header'>
-          <button onClick={() => this.setState({ newEmployee: {
-            first_name: '', last_name: '', title: '', manager_id: null
-          } })}>
+          <button onClick={() => this.setState({ showForm: true })}>
             Add New Employee
           </button>
         </div>
@@ -139,17 +78,18 @@ class App extends Component {
         )
       });
     } else {
-      this.setState({ selected: selected.id});
+      this.setState({ selected: selected.id, selectedName: selected.name});
     }
   }
 
   render() {
     console.log('RERENDERING');
+    console.log(this.state);
     if (this.state.employees) {
       const employees = this.state.employees;
       return (
         <div style={{display:'flex', flexDirection: 'column', alignItems: 'center', justifyContent:'center'}}>
-          {this.newEmployeeForm()}
+          {this.displayHeader()}
           <div style={{width:'75%'}}>
             {
               employees.map(employee => (
