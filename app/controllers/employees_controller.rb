@@ -2,7 +2,6 @@ class EmployeesController < ApplicationController
   def create
     @employee = Employee.new(employee_params)
     if @employee.save
-      # render json: @employee
       render :show
     else
       render json: @employee.errors.full_messages, status: 422
@@ -11,15 +10,13 @@ class EmployeesController < ApplicationController
 
   def destroy
     @employee = Employee.find(params[:id])
-    @employee.destroy
-    render json: {}
+    @employee.destroy!
+    render :show
   end
 
   def index
-    # @employee = Employee.find_by_manager_id(nil)
     @employees = Employee.where(manager_id: nil)
     render "employees/index.json.jbuilder"
-    # written with full path to allow access to GET '/'
   end
 
   def show
@@ -36,7 +33,9 @@ class EmployeesController < ApplicationController
     end
   end
 
+  private
+
   def employee_params
-    params.require(:employee).permit(:first_name, :last_name, :title, :manager_id)
+    params.require(:employee).permit(:id, :first_name, :last_name, :title, :manager_id)
   end
 end

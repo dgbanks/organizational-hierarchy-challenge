@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { Employee } from './employee';
 import Form from './employee_form';
-import axios from 'axios';
+import * as APIUtils from './utils';
 import './App.css';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      selected: null,
-      newEmployee: null,
       showForm: false
     };
 
@@ -20,31 +18,33 @@ class App extends Component {
   }
 
   componentWillMount() {
-    this.fetchEmployees();
-  }
-
-  // componentDidUpdate() {
-  //
-  // }
-
-  fetchEmployees() {
-    axios.get('http://localhost:3000/employees').then(
+    APIUtils.fetchEmployees().then(
       response => this.setState({ employees: response.data })
     );
   }
 
   closeForm() {
-    this.setState({ showForm: false });
+    this.setState({ showForm: false, selected: null,  });
   }
 
   handleSubmit(employee) {
-    console.log('firing');
-    axios.post('http://localhost:3000/employees', employee)
-      .then(() => {
-        this.fetchEmployees();
-        this.closeForm();
+    async function anon() {
+      let response;
+      if (typeof(employee) === 'number') {
+        await APIUtils.deleteEmployee(employee);
+      } else if (employee.id) {
+        await APIUtils.editEmployee(employee);
+      } else {
+        await APIUtils.createEmployee(employee);
       }
-    );
+      console.log(response);
+    };
+    anon().then(() => {
+      APIUtils.fetchEmployees().then(
+        response => this.setState({ employees: response.data })
+      )
+      this.closeForm();
+    })
   }
 
   displayHeader() {
@@ -53,7 +53,8 @@ class App extends Component {
         <Form
           handleSubmit={this.handleSubmit}
           closeForm={this.closeForm}
-          manager={{id: this.state.selected, name: this.state.selectedName}}
+          manager={this.state.manager}
+          employee={this.state.selected}
         />
       );
     } else {
@@ -68,23 +69,14 @@ class App extends Component {
   }
 
   selectEmployee(selected) {
-    if (this.state.newEmployee) {
-      this.setState({
-        newEmployee: Object.assign(
-          {}, this.state.newEmployee, {
-            manager_id: selected.id,
-            manager_name: selected.name
-          }
-        )
-      });
+    if (this.state.showForm) {
+      this.setState({ manager: { id: selected.id, name: selected.name}});
     } else {
-      this.setState({ selected: selected.id, selectedName: selected.name});
+      this.setState({ selected: selected, showForm: true});
     }
   }
 
   render() {
-    console.log('RERENDERING');
-    console.log(this.state);
     if (this.state.employees) {
       const employees = this.state.employees;
       return (

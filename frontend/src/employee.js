@@ -6,6 +6,8 @@ export class Employee extends React.Component {
   constructor() {
     super();
     this.state = { showSubordinates: true };
+
+    this.handleClick = this.handleClick.bind(this);
   }
 
   renderToggleControl(employee) {
@@ -37,7 +39,8 @@ export class Employee extends React.Component {
           <Subordinate
             key={subordinate.id}
             employee={subordinate}
-            opacity={this.props.opacity - 0.1}
+            managerName={employee.name}
+            opacity={this.props.opacity - 0.07}
             selectEmployee={this.props.selectEmployee}
             disableToggle={this.props.disableToggle}
           />
@@ -46,8 +49,18 @@ export class Employee extends React.Component {
     }
   }
 
+  handleClick() {
+    console.log('clicked', this.state);
+    this.props.selectEmployee({
+      id: this.props.employee.id,
+      name: this.props.employee.name,
+      title: this.props.employee.title,
+      manager_id: this.props.employee.manager_id,
+      managerName: this.props.managerName
+    });
+  }
+
   render() {
-    console.log('rendering down the line probably like 22 times');
     const employee = this.props.employee;
     const opacity = this.props.opacity;
 
@@ -55,9 +68,12 @@ export class Employee extends React.Component {
       <div style={{borderLeft:'1px solid black', borderRadius:'10px'}}>
         <div
           className='employee'
-          style={{backgroundColor:`rgba(255,0,0,${opacity}`}}
-          onClick={() => this.props.selectEmployee({name: employee.name, id: employee.id})}>
-          <h1>{employee.name}, {employee.title}</h1>
+          style={{backgroundColor:`rgba(255,0,0,${opacity}`}}>
+
+          <span onClick={this.handleClick} style={{display:'flex', alignItems:'center'}}>
+            <h1>{employee.name}, {employee.title}</h1>
+            <p>(Click to edit)</p>
+          </span>
           {this.renderToggleControl(employee)}
         </div>
         <div style={{width:'95%', marginLeft:'5%'}}>
