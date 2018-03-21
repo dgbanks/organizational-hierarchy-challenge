@@ -10,12 +10,12 @@
 
 .employee:hover {
   cursor: pointer;
-  padding: 20px 20px;
-  border: 2px solid red;
+  padding: 5px 20px;
+  border: 2px solid black;
 }
 
 .employee:hover h1 {
-  color:white;
+  color:black;
 }
 
 .employee div {

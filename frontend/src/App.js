@@ -21,13 +21,14 @@ class App extends Component {
     APIUtils.fetchEmployees().then(
       response => {
         this.setState({ employees: response.data });
-        console.log(response);
       }
     );
   }
 
-  closeForm() {
-    this.setState({ showForm: false, selected: null });
+  closeForm(x) {
+    this.setState({ showForm: false, selected: null }, () =>
+      x ? this.setState({ notice: null }) : null
+    );
   }
 
   handleSubmit(employee) {
@@ -86,6 +87,9 @@ class App extends Component {
 
   selectEmployee(selected) {
     if (this.state.showForm) {
+      if (this.state.notice) {
+        this.setState({ notice: null});
+      }
       this.setState({ manager: { id: selected.id, name: selected.name}});
     } else {
       this.setState({ selected: selected, showForm: true});

@@ -1,14 +1,20 @@
 class EmployeesController < ApplicationController
   def create
     @employee = Employee.new(employee_params)
-    @notice = "Invalid attributes" unless @employee.save
+    unless @employee.save
+      if @employee.errors.full_messages.empty?
+        @notice = "Invalid attributes"
+      else
+        @notice = @employee.errors.full_messages[0]
+      end
+    end
     render :notice
   end
 
   def destroy
     @employee = Employee.find(params[:id])
-    @employee.destroy!
-    render :show
+    @notice = "Can't delete!" unless @employee.destroy!
+    render :notice
   end
 
   def index
@@ -18,17 +24,24 @@ class EmployeesController < ApplicationController
 
   def show
     @employee = Employee.find(params[:id])
-    render :show
+    if @employee
+      render json: @employee
+    else
+      @notice = @employee.errors.full_messages
+      render :notice
+    end
   end
 
   def update
     @employee = Employee.find(params[:id])
-    if @employee.send(:no_loop?) && @employee.update_attributes(employee_params)
-      render :show
-    else
-      @notice = "Can't create loops in hierarchy"
-      render :notice
+    unless @employee.update_attributes(employee_params)
+      if @employee.errors.full_messages.empty?
+        @notice = "Can't create loops in hierarchy"
+      else
+        @notice = @employee.errors.full_messages[0]
+      end
     end
+      render :notice
   end
 
   private

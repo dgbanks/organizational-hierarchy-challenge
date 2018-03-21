@@ -11,10 +11,9 @@ class Employee < ApplicationRecord
     primary_key: :id,
     foreign_key: :manager_id,
     class_name: :Employee
-    # dependent: :destroy
 
   before_destroy :update_direct_reports
-  # before_update :check_for_loop
+  before_update :check_for_loop
 
   def name
     self.first_name + ' ' + self.last_name
@@ -26,14 +25,12 @@ class Employee < ApplicationRecord
 
   private
 
-  def no_loop?
-    employee = self.dup
+  def check_for_loop
+    employee = self.clone
     employeeId = employee.id
-    loop do
-      if employeeId == employee.manager_id
-        return false
-      elsif !employee
-        return true
+    while employee.manager_id
+      if employee.manager_id == employeeId
+        throw(:abort)
       else
         employee = employee.manager
       end

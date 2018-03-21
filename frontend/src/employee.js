@@ -8,6 +8,8 @@ export class Employee extends React.Component {
     this.state = { showSubordinates: true };
 
     this.handleClick = this.handleClick.bind(this);
+    this.renderToggleControl = this.renderToggleControl.bind(this);
+    this.renderSubordinates = this.renderSubordinates.bind(this);
   }
 
   renderToggleControl(employee) {
@@ -50,7 +52,6 @@ export class Employee extends React.Component {
   }
 
   handleClick() {
-    console.log('clicked', this.state);
     this.props.selectEmployee({
       id: this.props.employee.id,
       name: this.props.employee.name,
@@ -69,10 +70,8 @@ export class Employee extends React.Component {
         <div
           className='employee'
           style={{backgroundColor:`rgba(255,0,0,${opacity}`}}>
-
           <span onClick={this.handleClick} style={{display:'flex', alignItems:'center'}}>
             <h1>{employee.name}, {employee.title}</h1>
-            <p>(Click to edit)</p>
           </span>
           {this.renderToggleControl(employee)}
         </div>
