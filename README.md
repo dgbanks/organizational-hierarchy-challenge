@@ -1,24 +1,15 @@
-# README
+# Organizational Relationship API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### Setup
+  * Clone this repo
+  * run ```rails db:setup``` in root directory
+  * run ```npm install``` in ```/frontend```
+  * run ```rails s``` to set create the API on ```localhost:3000```
+  * run ```npm start```, which should run on ```localhost:3001```
 
-Things you may want to cover:
+### API
+  * backend routes can be tested via Postman or the localhost:3000 url
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+### Frontend
+  * single-page display of all employees, nested and collapsable
+  * no frontend routes implemented, but CRUD actions can be performed via form located in header

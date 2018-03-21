@@ -18,13 +18,13 @@ export class Employee extends React.Component {
         if (this.state.showSubordinates) {
           return (
             <div onClick={() => this.setState({showSubordinates:false})}>
-            Hide Direct Reports
+              Hide Subordinates
             </div>
           );
         } else {
           return (
             <div onClick={() => this.setState({showSubordinates:true})}>
-            Show Direct Reports
+              Show Subordinates
             </div>
           );
         }
